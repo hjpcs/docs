@@ -76,25 +76,3 @@ public class SampleTest {
     driver.quit();
   }
 }
-
-
-# This sample code uses the Appium python client
-# pip install Appium-Python-Client
-# Then you can paste this into a file and simply run with Python
-
-from appium import webdriver
-
-caps = {}
-caps["deviceName"] = "192.168.152.101:5555"
-caps["platformName"] = "android"
-caps["appPackage"] = "com.xueqiu.android"
-caps["appActivity"] = ".view.WelcomeActivityAlias"
-
-driver = webdriver.Remote("http://localhost:4723/wd/hub", caps)
-
-el8 = driver.find_element_by_xpath("/hierarchy/android.widget.FrameLayout/android.widget.LinearLayout/android.widget.FrameLayout/android.view.ViewGroup/android.widget.FrameLayout/android.widget.LinearLayout/android.widget.TabHost/android.widget.LinearLayout/android.widget.TabWidget/android.widget.RelativeLayout[2]/android.widget.TextView")
-el8.click()
-el9 = driver.find_element_by_xpath("/hierarchy/android.widget.FrameLayout/android.widget.LinearLayout/android.widget.FrameLayout/android.view.ViewGroup/android.widget.FrameLayout/android.widget.LinearLayout/android.widget.FrameLayout/android.widget.FrameLayout/android.widget.FrameLayout/android.widget.FrameLayout/android.widget.FrameLayout[2]/android.widget.FrameLayout/android.widget.LinearLayout/android.widget.RelativeLayout[2]/android.widget.RelativeLayout/android.widget.FrameLayout/android.widget.HorizontalScrollView/android.widget.LinearLayout/android.widget.RelativeLayout[4]/android.widget.TextView")
-el9.click()
-
-driver.quit()
