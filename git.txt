@@ -1,0 +1,2 @@
+解除版本控制
+find . -name ".git"|xargs rm -rf

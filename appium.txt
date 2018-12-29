@@ -1,0 +1,100 @@
+启动app需四个参数
+deviceName：使用adb devices即可查看device名称
+platformName：android或者ios
+appPackage：使用adb logcat | grep ActivityManager命令，启动app后找到日志中Displayed或者cmp后面的参数即可
+appActivity：同上
+wget：下载文件
+adb install *.apk：安装apk，-r参数可覆盖已安装的apk
+adb shell：进入安卓系统的命令行
+aapt dump badging *.apk：可以查看apk包的一些信息
+appium -g appium.log抓取日志
+流程：获取系统信息--安装appium settings--再安装一个unlock解锁的工具--接着ps命令看下当前有多少个进程--kill掉以前的一些系统信息
+--再清理掉一些老的进程--再run一个uiautomator--最后用am start启动app
+
+
+python版本
+# This sample code uses the Appium python client
+# pip install Appium-Python-Client
+# Then you can paste this into a file and simply run with Python
+
+from appium import webdriver
+
+caps = {}
+caps["deviceName"] = "14375200 "
+caps["platformName"] = "android"
+caps["appPackage"] = "com.xueqiu.android"
+caps["appActivity"] = ".view.WelcomeActivityAlias"
+
+driver = webdriver.Remote("http://localhost:4723/wd/hub", caps)
+
+el1 = driver.find_element_by_id("com.xueqiu.android:id/tv_login_by_phone_or_others")
+el1.click()
+el2 = driver.find_element_by_id("com.xueqiu.android:id/register_phone_number")
+el2.send_keys("18858356313")
+
+driver.quit()
+
+
+java版本
+import io.appium.java_client.MobileElement;
+import io.appium.java_client.android.AndroidDriver;
+import junit.framework.TestCase;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import java.net.MalformedURLException;
+import java.net.URL;
+import org.openqa.selenium.remote.DesiredCapabilities;
+
+public class SampleTest {
+
+  private AndroidDriver driver;
+
+  @Before
+  public void setUp() throws MalformedURLException {
+    DesiredCapabilities desiredCapabilities = new DesiredCapabilities();
+    desiredCapabilities.setCapability("deviceName", "14375200 ");
+    desiredCapabilities.setCapability("platformName", "android");
+    desiredCapabilities.setCapability("appPackage", "com.xueqiu.android");
+    desiredCapabilities.setCapability("appActivity", ".view.WelcomeActivityAlias");
+
+    URL remoteUrl = new URL("http://localhost:4723/wd/hub");
+
+    driver = new AndroidDriver(remoteUrl, desiredCapabilities);
+  }
+
+  @Test
+  public void sampleTest() {
+    MobileElement el1 = (MobileElement) driver.findElementById("com.xueqiu.android:id/tv_login_by_phone_or_others");
+    el1.click();
+    MobileElement el2 = (MobileElement) driver.findElementById("com.xueqiu.android:id/register_phone_number");
+    el2.sendKeys("18858356313");
+  }
+
+  @After
+  public void tearDown() {
+    driver.quit();
+  }
+}
+
+
+# This sample code uses the Appium python client
+# pip install Appium-Python-Client
+# Then you can paste this into a file and simply run with Python
+
+from appium import webdriver
+
+caps = {}
+caps["deviceName"] = "192.168.152.101:5555"
+caps["platformName"] = "android"
+caps["appPackage"] = "com.xueqiu.android"
+caps["appActivity"] = ".view.WelcomeActivityAlias"
+
+driver = webdriver.Remote("http://localhost:4723/wd/hub", caps)
+
+el8 = driver.find_element_by_xpath("/hierarchy/android.widget.FrameLayout/android.widget.LinearLayout/android.widget.FrameLayout/android.view.ViewGroup/android.widget.FrameLayout/android.widget.LinearLayout/android.widget.TabHost/android.widget.LinearLayout/android.widget.TabWidget/android.widget.RelativeLayout[2]/android.widget.TextView")
+el8.click()
+el9 = driver.find_element_by_xpath("/hierarchy/android.widget.FrameLayout/android.widget.LinearLayout/android.widget.FrameLayout/android.view.ViewGroup/android.widget.FrameLayout/android.widget.LinearLayout/android.widget.FrameLayout/android.widget.FrameLayout/android.widget.FrameLayout/android.widget.FrameLayout/android.widget.FrameLayout[2]/android.widget.FrameLayout/android.widget.LinearLayout/android.widget.RelativeLayout[2]/android.widget.RelativeLayout/android.widget.FrameLayout/android.widget.HorizontalScrollView/android.widget.LinearLayout/android.widget.RelativeLayout[4]/android.widget.TextView")
+el9.click()
+
+driver.quit()

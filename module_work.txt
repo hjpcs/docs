@@ -1,0 +1,47 @@
+os模块
+1、查找/tomcat/log/目录下的log文件，如果文件最后修改时间是在1小时之前，把此文件打包压缩，备份到/home/back/log目录下
+2、在Linux下每隔1分钟检查一下tomcat进程是不是在运行，如果tomcat进程退出了，立即启动tomcat进程
+3、搜索目录/home/tools/下所有以test开头，py结尾的文件(包括子目录的), 把文件全路径输出到一个列表里面打印出来
+
+
+sys模块
+1、启动一个python脚本run.py，传入参数为/home/tools/src，把/home/tools/src加入到python path里面，打印出前后的pythopath列表信息。 如果此目录下没有任何py文件，程序异常退出
+2、把上面的脚本输出信息通过sys.stdout重定向到log.txt
+
+
+time/datetime模块
+1、在web性能测试中，我们经常需要度量一个transaction（事务）需要花费多长时间，通常开发人员会使用log4j打印出事务的开 始点和结束点。下面是个真实的log4j输出内容
+DEBUG 180106 21:58:51,607 Receiver_1#receive a new request,  the session id is 2018010610020809 
+…. 
+…. 
+….
+DEBUG 180106 21:59:38,908 Receiver_4#send response to client,  the session id is2018010610020809
+计算出处理这个事务所花费的时间 
+
+
+commands/subprocess模块
+1、通过windows下的ping命令，得出www.testerhome.com的服务器IP地址
+2、通过python启动一个windows应用程序 
+3、在Linux下启动tomcat进程，并判断tomcat启动是否成功
+
+
+logging模块
+1、在不同模块中输出log信息到同一个文件test.log上，要求log输出不同级别的log，包括输出异常信息到log文件 
+
+
+ConfigParser模块
+1、用ConfigParser解析下面文件，获取各个option下面的信息
+[tomcat_server] 
+# Mail configutation  
+ip_address:192.168.8.9  
+account: testerhome  
+password:123456
+
+[mail_server] 
+smtp_host:smtp.126.com 
+from_address:no-replay_autotest@126.com 
+to_address: testerhome@126.com 
+
+
+MySQLdb/pymysql模块
+1、连接测试数据库，对其中某个表分别指向select,update,insert,delete语句 

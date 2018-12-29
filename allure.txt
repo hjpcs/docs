@@ -1,0 +1,11 @@
+Allure安装
+npm install -g allure-commandline --save-dev
+
+Allure生成报告
+mvn test生成xml文件
+allure serve "项目中surefire-reports路径"
+
+配置pom依赖后
+mvn clean test
+allure serve allure-results\  在线报告
+allure generate allure-results\  实体报告

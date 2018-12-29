@@ -1,0 +1,50 @@
+设置http代理，https同理
+http_proxy=http://112.126.81.122:60225 curl -s http://www.baidu.com/s?wd=ip | grep 本机IP
+
+
+提取对外连接的IP数量
+netstat -ntp | sed 1,2d | awk '{print $5}' | awk -F ':' '{print $1}' | sort | uniq -c | sort -n | wc -l
+netstat -ntp
+netstat命令是一个监控TCP/IP网络的非常有用的工具，它可以显示路由表、实际的网络连接以及每一个网络接口设备的状态信息。
+-n:直接使用ip地址，而不通过域名服务器
+-t:显示TCP传输协议的连线状况
+-p:显示正在使用Socket的程序识别码和程序名称
+可以使用netstat --help命令查看帮助
+sed 1,2d   删除第一行和第二行
+uniq -c   uniq是和相邻的行比较去重，不相邻就不行，去重前先sort，-c表示计算相同的行数有多少
+sort -n   根据数值大小排序
+sort -u   去除重复行
+wc -l   -c统计字节数 -l统计行数 -w统计字数
+
+
+提取testerhome首页精华帖的点赞数
+curl -s https://testerhome.com 2>/dev/null | grep -b1 'fa fa-diamond' | grep 'href' | awk -F '\"' '{print $4}' | grep 'topics' | while read line; do count=$(curl -s https://testerhome.com$line 2>/dev/null | grep 'data-count.*likeable' | head -1 | awk -F '\"' '{print $4}'); echo "$line is: $count"; done
+2>/dev/null   0标准输入 1标准输出 2标准错误，将标准错误输出到/dev/null中，/dev/null是一个黑洞
+grep -b1   输出匹配的行及其前一行后一行，-A1输出匹配的行及后一行 -B1输出匹配的行及前一行
+head -1   显示匹配到的行的第一行
+
+
+从nginx log中提取数据并可视化
+cat 1206_2.log | sed -n '/07:48:00/,/07:52:00/p' | gnuplot -e "set terminal dumb; set datafile separator ' ';set timefmt '[%d/%b/%Y:%H:%M:%S'; set ydata time; set format y '%H:%M:%S';plot '<cat' using 8:4 with lines"
+sed -n '/07:48:00/,/07:52:00/p'   -n静态显示，'/07:48:00/,/07:52:00/p'打印这段时间域的日志，p表示print，d表示delete
+set ydata time; set format y '%H:%M:%S'   设置纵坐标为时间，以及时间格式
+gnuplot -e "set terminal dumb; set datafile separator ' '   终端设置及文件分隔符
+plot '<cat' using 8:4 with lines"   plot '<cat'固定用法，using 8:4是取的数据的一个域，展示第4列和第8列
+
+
+提取系统state连接种类
+netstat -ntp | sed 1,2d | awk '{print $6}' | sort | uniq -c
+
+
+teserhome 某一精华帖任意一回复贴的数量，任意一个精华帖会有多个回复、找出任意一个回复贴的点赞数
+每个精华帖的回复数
+curl -s https://testerhome.com/topics/excellent 2>/dev/null | grep -o 'href="/topics/[0-9]*"' | awk -F '/|"' '{print $4}' | while read line; do reply=$(curl -s https://testerhome.com/topics/$line 2>/dev/null | grep -m1 '共收到' | awk -F '<b>|</b>' '{print $2}');echo "$line reply is $reply";done
+每个精华帖的回复的点赞数
+curl -s https://testerhome.com/topics/excellent 2>/dev/null | grep -o 'href="/topics/[0-9]*"' | awk -F '/|"' '{print $4}' | while read line; do replyzan=$(curl -s https://testerhome.com/topics/$line 2>/dev/null | grep 'Reply' | grep -o 'data-count="[0-9]*' | awk -F '"' '{print $2}'); count=1; for zan in $replyzan; do echo "$line第$count条回复的赞为$zan"; count=$(($count+1)); done; echo -e "\n"; done
+
+
+完整需求是这样的: 文件夹下可能存在很多子文件夹， 并且不确定有多少层。如果发现子文件夹名字和内部的图片名字不统一， 那就给文件重命名为上一层文件夹名字，比如 A -> B -> C.png 发现 B下的图片名字应该是B.png， 目前是C， 所以重命名他
+
+打包文件：tar -zcvf "目标路径".tar.gz "源路径"
+
+ssh 58356313@shell.testing-studio.com testerhome
