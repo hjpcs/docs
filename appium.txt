@@ -12,67 +12,107 @@ appium -g appium.log抓取日志
 --再清理掉一些老的进程--再run一个uiautomator--最后用am start启动app
 
 
-python版本
-# This sample code uses the Appium python client
-# pip install Appium-Python-Client
-# Then you can paste this into a file and simply run with Python
-
-from appium import webdriver
-
-caps = {}
-caps["deviceName"] = "14375200 "
-caps["platformName"] = "android"
-caps["appPackage"] = "com.xueqiu.android"
-caps["appActivity"] = ".view.WelcomeActivityAlias"
-
-driver = webdriver.Remote("http://localhost:4723/wd/hub", caps)
-
-el1 = driver.find_element_by_id("com.xueqiu.android:id/tv_login_by_phone_or_others")
-el1.click()
-el2 = driver.find_element_by_id("com.xueqiu.android:id/register_phone_number")
-el2.send_keys("18858356313")
-
-driver.quit()
+autoGrantPermissions=true pm grant com.xueqiu.android android.permission.WRITE_EXTERNAL_STORAGE
+定位技巧，推荐使用xpath
+byid
+byaccessibilityId
+大招 xpath定位 //android.widget.ListView/[2] //[@text='行情'] //*[@content-desc='xxxx']
+findElements + id + accessibilityId
+寻找父类的标识符 findElement.findElement
+driver.getPageSource()
 
 
-java版本
-import io.appium.java_client.MobileElement;
-import io.appium.java_client.android.AndroidDriver;
-import junit.framework.TestCase;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
-import java.net.MalformedURLException;
-import java.net.URL;
-import org.openqa.selenium.remote.DesiredCapabilities;
+toast识别
+@Test
+public void testToast() throws InterruptedException {
+    driver.findElementByXPath("//*[@text='Views']").click();
+    driver.findElementByAndroidUIAutomator(
+            "new UiScrollable(new UiSelector().scrollable(true).instance(0)).scrollIntoView(" +
+                    "new UiSelector().text(\"Popup Menu\").instance(0));").click();
+    driver.findElementByXPath("//*[contains(@text, 'Make')]").click();
+    driver.findElementByXPath("//*[@text='Search']").click();
+    //System.out.println(driver.findElementByClassName("android.widget.Toast").getText());
+    System.out.println(driver.findElementByXPath("//*[@class='android.widget.Toast']").getText());
 
-public class SampleTest {
-
-  private AndroidDriver driver;
-
-  @Before
-  public void setUp() throws MalformedURLException {
-    DesiredCapabilities desiredCapabilities = new DesiredCapabilities();
-    desiredCapabilities.setCapability("deviceName", "14375200 ");
-    desiredCapabilities.setCapability("platformName", "android");
-    desiredCapabilities.setCapability("appPackage", "com.xueqiu.android");
-    desiredCapabilities.setCapability("appActivity", ".view.WelcomeActivityAlias");
-
-    URL remoteUrl = new URL("http://localhost:4723/wd/hub");
-
-    driver = new AndroidDriver(remoteUrl, desiredCapabilities);
-  }
-
-  @Test
-  public void sampleTest() {
-    MobileElement el1 = (MobileElement) driver.findElementById("com.xueqiu.android:id/tv_login_by_phone_or_others");
-    el1.click();
-    MobileElement el2 = (MobileElement) driver.findElementById("com.xueqiu.android:id/register_phone_number");
-    el2.sendKeys("18858356313");
-  }
-
-  @After
-  public void tearDown() {
-    driver.quit();
-  }
 }
+
+
+修改adb脚本获取adb命令 思路：将原来的脚本重命名，建一个新的adb脚本链接原来的脚本并在调用前输出命令
+#!/bin/bash
+PLATFORM_TOOL="/usr/local/Cellar/android-sdk/24.4.1_1/platform-tools/adb.ori"
+#打印时间
+echo "#`date +%Y%m%d_%H%M` $0" >> /tmp/adb.log
+#打印所有的参数
+echo "adb $@">> /tmp/adb.log抓取日志
+test -x "$PLATFORM_TOOL" && exec "$PLATFORM_TOOL" "$@"
+echo "It appears you do not have 'Android SDK Platform-tools' installed."
+echo "Use the 'android' tool to install them: "
+echo "    android update sdk --no-ui --filter 'platform-tools'"
+
+
+使用代理抓取appium中间交互
+#代理拦截
+gem install em-proxy -i /usr/local/bin/
+em-proxy -l 5723 -r 127.0.0.1:4723 -v
+#嗅探抓包
+sudo tcpdump -i any port 4723 or port 8203 -w /tmp/tcpdump.log
+二进制文件使用wireshark分析
+
+
+webview测试
+第一种办法
+@Test
+public void webview(){
+    driver.findElementByXPath("//android.widget.TextView[@text='沪深' and @resource-id='com.xueqiu.android:id/button_text']").click();
+    driver.findElementByAccessibilityId("立即开户").click();
+    driver.findElementByAccessibilityId("开始").click();
+}
+第二种办法
+
+https://github.com/appium/appium/blob/master/docs/en/writing-running-appium/web/chromedriver.md
+把所有版本的chromedriver都放到一个目录下，然后设置
+
+desiredCapabilities.setCapability("chromedriverExecutableDir", "/Users/seveniruby/projects/chromedriver/chromedrivers/");
+借助于chrome://inspect/#devices 查看所有的手机webview
+
+使用webview context切换到web测试状态再进行传统的web定位
+
+@Test
+public void context() throws InterruptedException {
+    for(Object c : driver.getContextHandles()){
+        System.out.println(c.toString());
+    }
+    System.out.println(driver.getPageSource());
+    driver.findElementByXPath("//android.widget.TextView[@text='沪深' and @resource-id='com.xueqiu.android:id/button_text']").click();
+    for(Object c : driver.getContextHandles()){
+        System.out.println(c.toString());
+    }
+    Thread.sleep(3000);
+    for(Object c : driver.getContextHandles()){
+        System.out.println(c.toString());
+    }
+
+    driver.context("WEBVIEW_com.xueqiu.android");
+    System.out.println(driver.getPageSource());
+    driver.findElementByCssSelector(".inner").click();
+}
+
+
+Android知识点梳理
+adb shell uiautomator dump
+adb shell cat /sdcard/window_dump.xml
+adb shell dumpsys activity top
+
+adb shell input text 123
+adb shell input swipe 200 200  500 500 1000
+
+adb架构
+adb client: adb shell echo xxxx
+adb server: adb -L tcp:5037 fork-server server --reply-fd 4
+adbd: adb shell ps | grep adbd
+
+adb命令替换来解决命令分析
+echo "# $$ "$(date "+%Y/%m/%d %H:%M:%S") >> /tmp/adb.log
+echo "# ppid: $(ps -o command  $(ps -o ppid $$ | tail -1) | tail -1)" >> /tmp/adb.log
+echo "adb $@" >> /tmp/adb.log
+exec /Users/seveniruby/Library/Android/sdk//platform-tools/adb.bak "$@"
