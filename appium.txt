@@ -59,7 +59,13 @@ sudo tcpdump -i any port 4723 or port 8203 -w /tmp/tcpdump.log
 二进制文件使用wireshark分析
 
 
-webview测试
+webview测试：模拟器默认支持，真机需要打开app内开关
+检测是否打开：反编译检查对应的api调用
+必须从您的应用中启用webview调试，要启用webview调试，请在webview类上调用静态方法setWebContentsDebuggingEnabled
+if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+	WebView.setWebContentsDebuggingEnabled(true);
+}
+此设置适用于应用的所有webview
 第一种办法
 @Test
 public void webview(){

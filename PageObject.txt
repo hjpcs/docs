@@ -1,0 +1,56 @@
+1.用Page Object表示UI
+2.减少重复样板代码
+3.让变更范围控制在Object内
+
+Summary
+1.The public methods represent the services that the page offers
+用公共方法代替页面提供服务
+2.Try not to expose the internals of the page
+尽量不暴露页面内容
+3.Generally don't make assertions
+通常不做断言
+4.Methods return other PageObjects
+方法返回其他页面类
+5.Need not represent an entire page
+不需要表示整个页面
+6.Different results for the same action are modelled as different methods
+相同操作的不同返回结果被定义成不同方法
+
+业务分析
+	业务分析：根据重要性和紧急程度划分
+	bug分析：过去半年来的bug分布
+	用户行为分析：从线上或埋点平台提取用户行为分析
+
+用例设计
+	自动化测试用例与手工测试用例的设计方法是一致的，区别只是执行方式
+
+用例实现
+	UI自动化测试
+		稳定的功能：投入少
+		重要的功能：投入多但是回报也大
+	自动遍历
+		入口简单
+		顺序访问即可验证
+	接口测试
+		复杂行为通过UI测试成本大的转移到接口层
+	手工测试30%
+
+自动化用例设计
+	测试框架改进
+	页面建模
+	自动化用例组织
+	持续集成
+
+
+
+
+
+
+
+
+
+
+
+
+
+
