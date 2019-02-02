@@ -1,8 +1,8 @@
 启动app需四个参数
-deviceName：使用adb devices即可查看device名称
-platformName：android或者ios
-appPackage：使用adb logcat | grep ActivityManager命令，启动app后找到日志中Displayed或者cmp后面的参数即可
-appActivity：同上
+	deviceName：使用adb devices即可查看device名称
+	platformName：android或者ios
+	appPackage：使用adb logcat | grep ActivityManager命令，启动app后找到日志中Displayed或者cmp后面的参数即可
+	appActivity：同上
 wget：下载文件
 adb install *.apk：安装apk，-r参数可覆盖已安装的apk
 adb shell：进入安卓系统的命令行
@@ -51,12 +51,12 @@ echo "    android update sdk --no-ui --filter 'platform-tools'"
 
 
 使用代理抓取appium中间交互
-#代理拦截
-gem install em-proxy -i /usr/local/bin/
-em-proxy -l 5723 -r 127.0.0.1:4723 -v
-#嗅探抓包
-sudo tcpdump -i any port 4723 or port 8203 -w /tmp/tcpdump.log
-二进制文件使用wireshark分析
+	#代理拦截
+		gem install em-proxy -i /usr/local/bin/
+		em-proxy -l 5723 -r 127.0.0.1:4723 -v
+	#嗅探抓包
+		sudo tcpdump -i any port 4723 or port 8203 -w /tmp/tcpdump.log
+		二进制文件使用wireshark分析
 
 
 webview测试：模拟器默认支持，真机需要打开app内开关
@@ -66,6 +66,10 @@ if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
 	WebView.setWebContentsDebuggingEnabled(true);
 }
 此设置适用于应用的所有webview
+
+AndroidWebView进程信息
+	adb shell cat /proc/net/unix | grep webview
+
 第一种办法
 @Test
 public void webview(){
@@ -105,20 +109,29 @@ public void context() throws InterruptedException {
 
 
 Android知识点梳理
-adb shell uiautomator dump
-adb shell cat /sdcard/window_dump.xml
-adb shell dumpsys activity top
+	adb shell uiautomator dump
+	adb shell cat /sdcard/window_dump.xml
+	adb shell "uiautomator dump && cat /sdcard/window_dump.xml"
+	adb shell dumpsys activity top
 
-adb shell input text 123
-adb shell input swipe 200 200  500 500 1000
+	adb shell input text 123
+	adb shell input tap x y
+	adb shell input swipe 200 200  500 500 1000
+
+	获取界面结构xml -> node -> 坐标 -> input
+	adb shell "uiautomator dump && cat /sdcard/window_dump.xml" |grep -oE  "<node[^>]*>" | grep -v 'resource-id=""' | grep -oE 'bounds=".*?]"'  | sed 's#[^0-9]\{1,\}# #g'
+
+	adb shell pm clear xxx(appPackage)
+	adb shell dumpsys package xxx(appPackage)
 
 adb架构
-adb client: adb shell echo xxxx
-adb server: adb -L tcp:5037 fork-server server --reply-fd 4
-adbd: adb shell ps | grep adbd
+	adb client: adb shell echo xxxx
+	adb server: adb -L tcp:5037 fork-server server --reply-fd 4
+	adbd: adb shell ps | grep adbd
 
 adb命令替换来解决命令分析
-echo "# $$ "$(date "+%Y/%m/%d %H:%M:%S") >> /tmp/adb.log
-echo "# ppid: $(ps -o command  $(ps -o ppid $$ | tail -1) | tail -1)" >> /tmp/adb.log
-echo "adb $@" >> /tmp/adb.log
-exec /Users/seveniruby/Library/Android/sdk//platform-tools/adb.bak "$@"
+	echo "# $$ "$(date "+%Y/%m/%d %H:%M:%S") >> /tmp/adb.log
+	echo "# ppid: $(ps -o command  $(ps -o ppid $$ | tail -1) | tail -1)" >> /tmp/adb.log
+	echo "adb $@" >> /tmp/adb.log
+	exec /Users/seveniruby/Library/Android/sdk//platform-tools/adb.bak "$@"
+

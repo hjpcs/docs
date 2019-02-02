@@ -51,3 +51,41 @@ ssh 58356313@shell.testing-studio.com testerhome
 
 Linux查看版本当前操作系统发行版信息：cat /proc/version
 Linux查看cpu相关信息，包括型号、主频、内核信息等：cat /proc/cpuinfo
+
+#sed 's#正则#结果#g' g表示替换正则匹配的全部
+	echo 123abc456  | sed 's#abc#_#'
+	123_456
+	echo 123abc456  | sed 's#[2-9]#x#g'
+	1xxabcxxx
+	echo 123abc456  | sed 's#[2-9]#x#'
+	1x3abc456
+
+性能统计 统计某个进程的cpu和mem的增长情况 打印三列数据 时间 cpu mem	
+	for i in $(seq 1 20);do time=$(date +%H:%M:%S);  info=$(ps -o %cpu -o %mem 9081 | tail -1 );echo $time $info ;sleep 1;done
+
+任务处理 使用简易的工具对第三方服务做加压并统计性能
+	while true; do count=$(jobs -l | grep Running|wc -l); [ $count -le 5 ] && { time curl https://testerhome.com/topics/17870 &>/dev/null  & } || echo $count waiting ;done
+
+绘图工具可视化gnuplot
+	echo '1
+	2
+	3
+	4
+	5
+	6' | gnuplot -e "set terminal dumb;plot '<cat' using 1 with line"
+
+1. 找出log中的404 500的报错
+	grep -E " 404 | 500 " /tmp/nginx.log
+	awk '$9=="404"' /tmp/nginx.log
+
+2. 找出500错误数据行的前10条非500的数据
+	grep -B 10 " 500 " /tmp/nginx.log | less
+
+3. 找出访问量最高的ip
+	全部数据
+	awk '{print $1}' /tmp/nginx.log | sort | uniq -c | sort -rn | head -1
+	前1000条数据中访问量最高的前5个ip
+	head -1000 /tmp/nginx.log | awk '{print $1}' | sort | uniq -c | sort -nr | head -5
+
+4. 找出访问量最高的页面地址
+	awk '{print $7}' /tmp/nginx.log | sed -e "s#[0-9]\{1,\}#*#g" -e 's#?.*##' -e 's#/[^/]*\.png.*##' | sort | uniq -c | sort -nr | head -10
