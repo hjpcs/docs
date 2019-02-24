@@ -135,3 +135,5 @@ adb命令替换来解决命令分析
 	echo "adb $@" >> /tmp/adb.log
 	exec /Users/seveniruby/Library/Android/sdk//platform-tools/adb.bak "$@"
 
+使用命令启动app
+adb shell am start -W -n com.tencent.wework/.launch.LaunchSplashActivity  -S
