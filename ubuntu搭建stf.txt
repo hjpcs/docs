@@ -1,0 +1,74 @@
+安装nodejs
+	apt install nodejs
+	nodejs -v
+
+安装npm
+	apt install npm
+	npm -v
+
+安装adb
+	apt-get install android-tools-adb
+	adb -v
+
+安装RethinkDB，不适用于ubuntu18.04
+	source /etc/lsb-release && echo "deb http://download.rethinkdb.com/apt $DISTRIB_CODENAME main" | sudo tee /etc/apt/sources.list.d/rethinkdb.list
+	wget -qO- https://download.rethinkdb.com/apt/pubkey.gpg | sudo apt-key add -
+	sudo apt-get update
+	sudo apt-get install rethinkdb
+ubuntu18.04安装
+	https://github.com/srh/rethinkdb/releases/tag/v2.3.6.srh.1
+	上面这个网址下载		rethinkdb_2.3.6.srh.1.0bionic_amd64.deb
+	sudo dpkg -i rethinkdb_2.3.6.srh.1.0bionic_amd64.deb
+	rethinkdb --version
+
+安装GraphicsMagick
+	sudo apt-get install graphicsmagick
+	gm -version
+
+安装ZeroMQ
+	sudo apt-get install libzmq3-dev
+	find / -name libzmq3-dev
+
+安装Protocol Buffers
+	sudo apt-get install autoconf automake libtool curl make g++ unzip
+	git clone https://github.com/google/protobuf.git
+	cd protobuf
+	git submodule update --init --recursive
+	./autogen.sh
+	./configure
+	make
+	make check
+	sudo make install
+	sudo ldconfig # refresh shared library cache.
+	protoc --version
+
+安装yasm
+	apt-get install yasm
+	yasm --version
+
+安装pkg-config
+	apt-get install cmake 
+	apt-get install libgtk2.0-dev
+	（上面两步安装编译必须的库） 
+	apt-get install pkg-config
+	pkg-config --version
+
+安装jpeg-turbo
+	npm install --save jpeg-turbo
+
+安装stf
+	npm设置国内的镜像源仓库  npm set registry https://registry.npm.taobao.org
+	sudo npm install -g stf --unsafe-perm
+	npm install
+	npm link
+	stf --version
+
+创建一个rethinkdb存放数据的文件夹，到你想创建的地方执行rethinkdb
+
+启动stf
+	先启动adb  adb start-server
+	再启动rethinkdb
+	再stf local
+
+允许远程连接
+	stf local --public-ip 本地ip地址 --allow-remote
