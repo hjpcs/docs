@@ -1,0 +1,48 @@
+Docker和虚拟机的区别：
+	虚拟机：
+		服务器-操作系统-虚拟化服务-虚拟机操作系统-各类类库-应用
+	Docker：
+		服务器-操作系统-Docker Engine-各类类库-应用
+	最大的区别：虚拟机需要虚拟Guest OS，而Docker容器是共享宿主机内核
+
+后端兼容性测试：To B业务需要在不同客户环境下安装我们的应用软件
+	因为虚拟机可以虚拟出操作系统，所以能够模拟在宿主机为Ubuntu，虚拟机为CentOS的情况下应用程序的兼容情况
+	而Docker是共享宿主机内核，即便Docker采用的是CentOS镜像，其仍旧共享宿主机的Ubuntu内核，无法模拟在不同操作系统上的兼容性测试
+
+虚拟化内核是很费系统资源的，所以一台服务器可能可以同时挂上百个Docker，但十几个虚拟机可能就挂了
+
+Docker如何保证环境之间互相隔离，互不干扰：
+	Namespace网络名称空间：完全隔离网络的一种机制，处于两个网络名称空间中的应用进程是完全无法通信的--虚拟网络设备对打破限制
+	联合文件系统：文件隔离，每个容器提供一个单独的视图，只能访问本容器的文件
+	Cgroups：资源隔离，可以限制容器使用的资源，超出限制资源将会被操作系统干掉
+
+Docker命令：
+	镜像管理：
+		docker pull xxx:aaa：拉取镜像，xxx代表镜像名称或全路径，aaa可以表示镜像版本号
+		docker images：查看当前所有镜像
+		docker rmi xxx:aaa：删除镜像，xxx表示镜像名称或id，aaa表示版本号
+		docker load < xxx：加载本地镜像到docker中，xxx表示本地镜像tar包
+		docker save xxx > aaa：保存docker镜像到本地，xxx表示docker中的镜像，aaa表示本地保存的tar包
+		docker tag xxx:aaa newxxx:newaaa：给镜像打一个新的版本，但无法创建新的镜像，xxx:aaa表示原来的镜像名称：版本，newxxx:newaaa表示新的镜像名称：版本，省略aaa默认为latest，删除tag镜像只是解除了该tag，原来的镜像仍旧存在
+	容器启动：
+		docker run xxx:aaa：启动镜像，xxx代表镜像名称或全路径，aaa可以表示镜像版本号
+		docker run -d xxx:aaa：-d表示后台运行该镜像
+		docker run -d --name myjenkins -p 9999:8080 jenkins：--name重命名该镜像名称为name，-p，第一个表示宿主机端口，第二个容器端口
+		docker run -d --name myjenkins -itd -p 9999:8080 -v C:/Users/hejp25215/Downloads/docker/jenkins_home:/var/jenkins_home --env JAVA_OPTS="-Xmx8192m" jenkins
+		docker run -d --name myjenkins -p 9999:8080 -v C:/Users/hejp25215/Downloads/docker/jenkins_home:/var/jenkins_home jenkins
+		docker logs -f xxx：查看镜像启动日志，xxx代表镜像启动id，和tail -f效果一致
+	容器删除：
+		docker stop xxx：停止docker容器
+		docker kill xxx：杀死容器
+		docker rm xxx：删除docker容器
+		docker rm -f xxx：强制删除docker容器
+		docker container prune -f：强制删除所有容器
+	查看信息：
+		docker info：查看整体docker状态
+		docker ps：查看所有正在运行的docker进程，-a列出所有，包含已经退出的，-s列出当前容器占用的空间大小
+		docker inspect jenkins：查看镜像的元信息
+	容器交互：
+		docker exec -it xxx bash：进入容器，xxx代表容器名称，启动虚拟交互去执行bash窗口登录到容器里面
+		docker exec xxx echo "hello world"：
+		docker exec -d xxx ping www.baidu.com：
+		docker cp `pwd`/appium.txt myjenkins:/home：将宿主机中的文件复制到容器中
