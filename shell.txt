@@ -51,6 +51,7 @@ ssh 58356313@shell.testing-studio.com testerhome
 
 Linux查看版本当前操作系统发行版信息：cat /proc/version
 Linux查看cpu相关信息，包括型号、主频、内核信息等：cat /proc/cpuinfo
+cat /etc/os-release
 
 #sed 's#正则#结果#g' g表示替换正则匹配的全部
 	echo 123abc456  | sed 's#abc#_#'

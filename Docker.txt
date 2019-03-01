@@ -17,6 +17,11 @@ Docker如何保证环境之间互相隔离，互不干扰：
 	Cgroups：资源隔离，可以限制容器使用的资源，超出限制资源将会被操作系统干掉
 
 Docker命令：
+	docker相关：
+		systemctl start docker：启动
+		systemctl daemon-reload：守护进程重启
+		systemctl restart  docker：重启docker服务
+		systemctl stop docker：关闭docker服务
 	镜像管理：
 		docker pull xxx:aaa：拉取镜像，xxx代表镜像名称或全路径，aaa可以表示镜像版本号
 		docker images：查看当前所有镜像
@@ -25,12 +30,15 @@ Docker命令：
 		docker save xxx > aaa：保存docker镜像到本地，xxx表示docker中的镜像，aaa表示本地保存的tar包
 		docker tag xxx:aaa newxxx:newaaa：给镜像打一个新的版本，但无法创建新的镜像，xxx:aaa表示原来的镜像名称：版本，newxxx:newaaa表示新的镜像名称：版本，省略aaa默认为latest，删除tag镜像只是解除了该tag，原来的镜像仍旧存在
 	容器启动：
-		docker run xxx:aaa：启动镜像，xxx代表镜像名称或全路径，aaa可以表示镜像版本号
-		docker run -d xxx:aaa：-d表示后台运行该镜像
-		docker run -d --name myjenkins -p 9999:8080 jenkins：--name重命名该镜像名称为name，-p，第一个表示宿主机端口，第二个容器端口
-		docker run -d --name myjenkins -itd -p 9999:8080 -v C:/Users/hejp25215/Downloads/docker/jenkins_home:/var/jenkins_home --env JAVA_OPTS="-Xmx8192m" jenkins
-		docker run -d --name myjenkins -p 9999:8080 -v C:/Users/hejp25215/Downloads/docker/jenkins_home:/var/jenkins_home jenkins
-		docker logs -f xxx：查看镜像启动日志，xxx代表镜像启动id，和tail -f效果一致
+		docker run xxx:aaa：启动容器，xxx代表镜像名称或全路径，aaa可以表示镜像版本号
+		docker run -d xxx:aaa：-d表示后台运行该容器
+		docker run -d --name myjenkins -p 9999:8080 jenkins：--name重命名该容器名称为name，-p，第一个表示宿主机端口，第二个容器端口
+		docker run -d --name myjenkins -itd -p 9999:8080 -v C:\Users\jenkins_home:/var/jenkins_home --env JAVA_OPTS="-Xmx8192m" jenkins
+		docker run -d --name myjenkins -p 9999:8080 -v /etc/docker/jenkins_home:/var/jenkins_home jenkins
+		docker run -d --name myjenkins --net host jenkins：以host模式启动容器，使用宿主机网络
+		sudo chown -R 1000:1000 /etc/docker/jenkins_home：修改挂载权限
+		docker run --name some-mysql -v /etc/docker/mysql_home:/var/lib/mysql -e MYSQL_ROOT_PASSWORD=123456 -p 8888:3306 -d mysql
+		docker logs -f xxx：查看容器启动日志，xxx代表容器启动id，和tail -f效果一致
 	容器删除：
 		docker stop xxx：停止docker容器
 		docker kill xxx：杀死容器
@@ -46,3 +54,9 @@ Docker命令：
 		docker exec xxx echo "hello world"：
 		docker exec -d xxx ping www.baidu.com：
 		docker cp `pwd`/appium.txt myjenkins:/home：将宿主机中的文件复制到容器中
+	制作镜像：
+		docker commit xxx aaa：将容器做出的改变叠加到原镜像之上，xxx表示容器名称，aaa表示新镜像名称
+
+开启关闭Hyper-V：
+	bcdedit /set hypervisorlaunchtype off
+	bcdedit /set hypervisorlaunchtype auto
