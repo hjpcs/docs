@@ -1,0 +1,219 @@
+命令cd
+	进入上级目录
+		cd ..
+	进入当前用户主目录
+		cd ~
+	进入上两级目录
+		cd ../..
+	进入当前目录
+		cd .
+	进入目录/etc/docker
+		cd /etc/docker
+
+命令mv
+	移动一个文件夹（docker文件夹，移动到/root/file目录）
+		mv ~/docker/ /root/file
+	移动一个文件（docker.txt移动到/root/file目录）
+		mv docker.txt /root/file
+	当前目录docker.txt移动到/root/file目录，并重命名为docker0304.txt
+		mv docker.txt /root/file/docker0304.txt
+	移动文件到上级目录
+		mv docker.txt ../
+	一条命令，移动两个文件docker.txt jenkins.txt到目录/root/file
+		mv docker.txt jenkins.txt -t /root/file
+
+命令cp
+	复制当前目录包docker.tar.gz到备份目录/root/bak
+		cp docker.tar.gz /root/bak
+	复制文件夹docker到目录/root/file
+		cp -r docker/ /root/file
+
+命令mkdir
+	新建一个文件夹mysql
+		mkdir mysql
+	新建三个文件夹mysql1 mysql2 mysql3
+		mkdir mysql1 mysql2 mysql3
+	新建一个多层级文件夹mysql/2019/0304
+		mkdir -p mysql/2019/0304
+
+命令history
+	查看历史命令执行记录
+		history
+	查看命令mkdir的历史执行记录
+		history | grep mkdir
+	执行历史记录中序号为54的命令
+		!54
+
+命令tail
+	实时刷新log
+		tail -f mysql.log
+	实时刷新最新200条log
+		tail -200f mysql.log
+
+命令tar
+	压缩一个文件docker.txt
+		tar -cvf docker.tar docker.txt
+	压缩多个文件docker.txt jenkins.txt
+		tar -cvf all.tar docker.txt jenkins.txt
+ 	压缩文件夹docker/
+ 		tar -cvf docker.tar docker/
+ 	将当前目录所有jpg文件打包成jpg.tar
+ 		tar -cvf jpg.tar *.jpg
+ 	将当期目录所有png文件打包成png.tar.gz
+ 		tar -zcvf png.tar.gz *.png
+ 	解压jpg.tar
+ 		tar -xvf jpg.tar
+ 	解压png.tar.gz
+ 		tar -zxvf png.tar.gz
+
+命令ls
+ 	列出当期目录中所有子目录和文件
+ 		ls
+ 	列出目录下的所有文件（包含隐藏文件）
+ 		ls -a
+ 	列出文件的详细信息（包括权限、所有者、文件大小等）
+ 		ls -l
+ 	列出当前目录中所有以"docker"开头的详细内容
+ 		ls -l docker*
+
+命令ps
+ 	查看所有进程
+ 		ps -A
+ 	查看java进程
+ 		ps -ef | grep java
+ 	显示所有进程信息，包括命令行
+ 		ps -ef
+
+命令top
+ 	显示进程信息
+ 		top
+ 	监控每个逻辑cpu的状况
+ 		top，按1
+ 	高亮显示当前运行进程
+ 		top，按b
+ 	显示完整命令
+ 		top，按c
+ 	退出top程序
+ 		按q
+
+命令wget:wget是一个下载文件的工具，对于linux用户是必不可少的工具
+	文件地址
+		假设为http://xxxx/xxx.png
+	下载此文件
+		wget http://xxxx/xxx.png
+	下载此文件，并存储为aaa.png
+		wget -o aaa.png http://xxxx/xxx.png
+	后台下载此文件
+		wget -b http://xxxx/xxx.png
+
+命令find
+	在/root/file目录及其子目录下面查找名字为docker.txt的文件
+		find /root/file/ -name docker.txt
+	在当前目录及其子目录中查找任何扩展名为"ini"的文件
+		find . -name "*.ini"
+	在/root/file目录下查找更改时间在5日以前的文件
+		find /root/file/ -mtime +5
+	在/root/file目录下查找更改时间在3日以内的文件
+		find /root/file/ -mtime -3
+	在/root/file目录下查找所有的目录
+		find . -type d
+	在/root/file目录下查找所有的文件
+		find /root/file/ -type f
+	在当前目录所有的普通文件中搜索docker这个词
+		find ./ -type f | xargs grep "docker"
+	在当前目录，删除1天以内的所有东西
+		find ./ -mtime -1 -print | xargs rm -rf
+	在当前目录，删除5天以前的所有东西（慎用！慎用！慎用！）
+		find ./ -mtime +5 -print | xargs rm -rf
+	删除文件大小为0的文件
+		find ./ -size 0 | xargs rm -rf
+
+命令rm（rm -rf慎用）
+	删除/root/file/目录下的docker.txt文件（系统会询问是否删除）
+		rm /root/file/docker.txt
+	强行删除/root/file/目录下的docker.txt文件（系统不会询问是否删除）
+		rm -f /root/file/docker.txt
+	删除/root/file/目录下的所有.log文件
+		rm -f /root/file/*.log
+	删除/root/file/目录下的jenkins文件夹
+		rm -r /root/file/jenkins/
+	强行删除/root/file/目录下的jenkins文件夹
+		rm -rf /root/file/jenkins/
+	删除/root/file/目录下的所有内容
+		rm -rf /root/file/*
+
+文件操作命令
+	创建文件
+		touch docker.txt
+		vim docker.md
+		echo 'create file' > docker.ini
+		cp docker.txt dockercp.txt
+		ls > filelist.txt
+	同时创建几个文件
+		touch docker.txt jenkins.txt
+	同时创建1000个文件
+		touch mysql{0001..1000}.ini
+	更改文件docker.txt时间为当前时间
+		touch docker.txt
+
+查看文件命令
+	命令提示
+		cat 从第一行开始显示
+		tac	从最后一行开始显示
+		more 一页一页显示
+		less 与more相同，但是可以往前翻页，推荐用less
+		head 只看头几行
+		tail 只看尾几行
+		nl 显示的时候，输出行号
+	查看文件docker.txt的内容
+		cat docker.txt
+	查看文件docker.txt前20行的内容
+		head -n 20 docker.txt
+	查看文件docker.txt后30行的内容
+		tail -n 30 docker.txt
+	显示文件docker.txt的第10行到第20行内容
+		head -n 20 docker.txt | tail -n 10
+	倒序显示文件docker.txt前10行的内容
+		tac docker.txt | head -n 10
+	显示文件docker.txt前10行的内容，并显示行号
+		nl docker.txt | head -n 10
+
+命令yum & scp
+# 假设当前服务器ip为192.168.1.2
+	从linux服务器192.168.1.1复制文件docker.txt到服务器192.168.1.2
+		scp root@192.168.1.1:/root/file/docker.txt /root/file
+	从linux服务器192.168.1.1复制目录docker/到服务器192.168.1.2
+		scp -r root@192.168.1.1:/root/file/docker/ /root/file
+	安装scp命令，假设是centos
+		yum install openssh-clients
+
+命令clear & ifconfig & df & du
+	清屏
+		clear
+	查看当前服务器ip
+		ifconfig
+	查看当前服务器硬盘空间
+		df -h
+	查看目录docker/所占用的空间
+		du -sh docker
+
+命令vi/vim & chmod
+	vi/vim，推荐用vim
+		创建文件、编辑文件
+	chmod
+		改变文件或目录的访问权限
+	创建文件docker.md
+		vim docker.md
+	更新文件内容为"this is a markdown file"
+		vim docker.md
+		按i，进入编辑模式
+		输入内容
+		按esc进入命令模式:wq保存退出
+	将文件docker.md设为所有人可读
+		chmod +r docker.md
+	将docker.md设为只有该文件的拥有者才可以执行
+		chmod u+x docker.md
+	给文件docker.md设置所有权限
+		chmod 777 docker.md（或者chmod a=rwx docker.md）
+
+后记：以上只列举了测试日常的高频命令，对于任何一个命令都可以使用--help查看使用帮助，如top --help，且任何一个命令都有其详细的解释，对于英语水平较好的同学，可以使用man命令将其解释文档输出保存为一个文件，以便查阅，同样使用top举例，可以使用man top > top.txt保存其解释文档。
