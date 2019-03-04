@@ -57,6 +57,6 @@ Docker命令：
 	制作镜像：
 		docker commit xxx aaa：将容器做出的改变叠加到原镜像之上，xxx表示容器名称，aaa表示新镜像名称
 
-开启关闭Hyper-V：
+开启关闭Hyper-V虚拟化服务：
 	bcdedit /set hypervisorlaunchtype off
 	bcdedit /set hypervisorlaunchtype auto
