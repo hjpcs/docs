@@ -36,7 +36,7 @@ Docker命令：
 		docker run -d --name myjenkins -itd -p 9999:8080 -v C:\Users\jenkins_home:/var/jenkins_home --env JAVA_OPTS="-Xmx8192m" jenkins
 		docker run -d --name myjenkins -p 9999:8080 -v /etc/docker/jenkins_home:/var/jenkins_home jenkins
 		docker run -d --name myjenkins --net host jenkins：以host模式启动容器，使用宿主机网络
-		sudo chown -R 1000:1000 /etc/docker/jenkins_home：修改挂载权限
+		sudo chown -R 1000:1000 /etc/docker/jenkins_home：修改挂载权限(非常重要，不同镜像uid不同！！！)
 		docker run --name some-mysql -v /etc/docker/mysql_home:/var/lib/mysql -e MYSQL_ROOT_PASSWORD=123456 -p 8888:3306 -d mysql
 		docker logs -f xxx：查看容器启动日志，xxx代表容器启动id或者名称，和tail -f效果一致
 	容器删除：
