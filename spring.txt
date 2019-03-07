@@ -1,0 +1,4 @@
+打包-跳过测试
+	mvn clean package -Dmaven.test.skip
+执行
+	java -jar xxx.jar
