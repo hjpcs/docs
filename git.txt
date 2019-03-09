@@ -1,2 +1,9 @@
 解除版本控制
-find . -name ".git"|xargs rm -rf
+	find . -name ".git"|xargs rm -rf
+
+centos7安装
+	yum install -y epel-release  
+	rpm -ivh https://centos7.iuscommunity.org/ius-release.rpm  
+	yum list git2u  
+	yum install -y git2u  
+	git --version
