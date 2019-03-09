@@ -1,1 +1,124 @@
+业务测试（面向新需求）、回归测试（面向已交付需求）、专项测试（面向非功能需求的各类质量维度特征）、质量监控
+
+业务测试
+	手工测试
+	接口测试
+		rest-assured
 专项测试
+	端性能测试
+		耗电量测试
+			batteryhistory
+			instruments
+		卡顿测试
+			blockcanary
+		h5性能测试
+			devtool headless chrome
+	端场景测试
+		兼容性测试
+			mqc mtc testin
+		健壮性测试
+			monkey
+		弱网测试
+			facebok atc
+			proxy定制
+		安全测试
+			wvs
+			burpsuite
+回归测试
+	接口测试
+		rest-assured
+	ui自动化测试
+		appium
+	自动遍历回归测试
+		appcrawler
+
+用户维度
+	崩溃
+		crash
+		弱网
+	卡顿
+		掉帧
+		gc
+		cpu
+	响应慢
+		启动时间
+		交互响应
+		H5加载
+	发热
+		cpu
+		mem
+		io
+		network
+		gps等硬件使用
+	掉电快
+		硬件占用
+	兼容性问题
+		机型覆盖
+		回归
+
+技术维度
+	崩溃
+		自动遍历
+		monkey测试
+		横竖屏切换
+		快速进退
+	卡顿
+		卡顿测试
+		内存泄露测试
+		method profile
+	响应慢
+		冷热启动
+		界面切换
+		H5性能测试
+	发热
+		method profile
+		gc统计
+		io统计
+		流量统计
+		硬件使用统计
+		耗电量分析
+	兼容性问题
+		兼容性测试
+		自动化测试
+		自动遍历
+		monkey测试
+
+常用解决方案
+	ddms
+	android studio最新版本的集成工具
+	代码插桩
+
+崩溃问题检测
+	典型问题
+		ANR：主线程5s内没反应
+		Force Close：未捕获的android vm异常
+		Crash：native crash
+	基本测试方法
+		发布前
+			monkey测试+appcrawler自动遍历
+			结合各类场景用例
+		发布后
+			埋点
+			接入外部sdk
+
+
+常见场景用例
+	接口返回异常
+		弱网
+			完全超时
+			2G 3G
+		null返回
+		字段类型变更
+	逻辑问题
+		打开新页面再快速返回，异步线程问题
+		横竖屏切换、前后台切换
+
+响应时间
+	adb shell am force-stop com.xueqiu.android
+	adb shell am start  -S -W com.xueqiu.android/.view.WelcomeActivityAlias
+	adb logcat |grep -i activitymanager.*Displayed
+	lazy load：只能埋点
+
+	thisTime:  最后一个activity时间
+	totalTime：包括间接启动的activity时间
+	waitTime：总体消耗时间
