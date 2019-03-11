@@ -1,0 +1,38 @@
+分层测试-金字塔模型
+UI               *
+Service         ***
+Unit           *****
+
+接口测试不能解决移动端的质量，仍然需要端的测试，模拟API对Service进行测试，绕过了移动端
+
+移动端测试						服务端测试
+		{Android}									{Service}
+用户	---	{iOS	}	---	API网关	---	微服务集群 -----	{BI		}
+		{H5		}									{DB		}
+
+常见的协议
+	IP
+	TCP UDP
+	HTTP DNS RPC
+	Soap RESTful Dubbo
+	ProtoBuf[Google] MCPack[Baidu]
+
+协议分析工具
+	网络嗅探
+		wireshark
+		tcpdump
+	Proxy
+		fiddler[仅windows]
+		anyproxy[全平台]
+		charles[全平台]
+		burpsuite[全平台java]
+	分析工具与协议客户端工具
+		curl
+		postman
+		chrome devtool
+
+har格式
+	HTTP Archive（HAR）format
+	可以用来自动生成接口测试用例
+
+curl xxx -vvv

@@ -217,3 +217,8 @@
 		chmod 777 docker.md（或者chmod a=rwx docker.md）
 
 后记：以上只列举了测试日常的高频命令，对于任何一个命令都可以使用--help查看使用帮助，如top --help，且任何一个命令都有其详细的解释，对于英语水平较好的同学，可以使用man命令将其解释文档输出保存为一个文件，以便查阅，同样使用top举例，可以使用man top > top.txt保存其解释文档。
+
+查看java应用
+	jps -ml
+查看应用路径
+	pwdx pid
