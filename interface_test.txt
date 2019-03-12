@@ -35,4 +35,64 @@ har格式
 	HTTP Archive（HAR）format
 	可以用来自动生成接口测试用例
 
-curl xxx -vvv
+curl https://www.baidu.com -vvv
+
+监听端口
+	nc -l 9999
+	浏览器发起请求hjpcs.top:9999 --> 模拟服务器向浏览器返回请求，将信息返回给浏览器需按两次回车
+
+	[root@goldoil /]# nc -l 9999
+	GET / HTTP/1.1
+	Host: hjpcs.top:9999
+	Connection: keep-alive
+	Cache-Control: max-age=0
+	Upgrade-Insecure-Requests: 1
+	User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/72.0.3626.121 Safari/537.36
+	Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8
+	Accept-Encoding: gzip, deflate
+	Accept-Language: zh-CN,zh;q=0.9
+	Cookie: grafana_session=42699501dd7b4e39eddcefaf81f97850
+
+	HTTP/1.1 200 OK
+
+	HELLO WORLD!MY NAME IS CENYOS!
+
+	WHAT'S YOUR NAME?
+
+	^C
+	[root@goldoil /]# 
+
+代理类别
+	HTTP Proxy
+	SOCKS Proxy
+
+接口测试流程
+	接口的范围
+		各个业务线的接口统计渠道
+			接口文档：人工文档、swagger自动生成的文档
+			代码分析：分析spring等框架的代码
+			线上log和数据：线上的生产监控和接口log
+			客户端抓包：基于用户角度的接口行为分析
+	接口分析
+		监听分析：tcpdump+wireshark+har提取工具
+		代理分析：charles+burpsuite
+		转发分析：修改host域名+反向代理转发
+	接口测试用例设计
+		接口调用的流程分析
+			代理抓包
+			线上log提取
+			人工用例补充：用流程图和思维导图进行业务建模
+				正常场景用例right path
+				异常场景用例
+				安全和稳定性用例
+	接口测试框架选择
+		常见框架
+			JMeter：性能测试工具，不具备完备的接口测试框架功能
+			Robotframework：主要用于技术弱的群体
+		推荐框架
+			RestAssured[开源]
+			SoapUI[商业化]
+			Swagger
+			基于各种语言的httpclient封装也是很常用的
+	测试用例编写与维护
+	持续集成
