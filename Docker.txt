@@ -60,3 +60,12 @@ Docker命令：
 开启关闭Hyper-V虚拟化服务：
 	bcdedit /set hypervisorlaunchtype off
 	bcdedit /set hypervisorlaunchtype auto
+
+升级jenkins
+1、打开jenkins网页，右键复制需要更新下载的war包地址
+2、进入jenkins容器：docker container exec -u 0 -it myjenkins bash
+3、在容器内下载war包：wget http://updates.jenkins-ci.org/download/war/2.164.1/jenkins.war
+4、移动war包：mv jenkins.war /usr/share/jenkins/
+5、修改权限：chmod 777 /usr/share/jenkins/jenkins.war
+6、退出容器并重启：exit docker container restart myjenkins
+
