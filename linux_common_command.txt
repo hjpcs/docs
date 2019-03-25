@@ -222,3 +222,5 @@
 	jps -ml
 查看应用路径
 	pwdx pid
+查看所有java应用路径
+	pid=$(jps -ml|awk '{print $1}');for i in $pid;do pwdx $i;done
