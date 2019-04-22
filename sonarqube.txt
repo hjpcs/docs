@@ -1,0 +1,99 @@
+使用docker部署
+	拉取镜像：docker pull sonarqube
+	临时部署：docker run -d --name sonarqube -p 9000:9000 -p 9092:9092 sonarqube
+	产品化部署：
+	docker run -d --name sonarqube \
+    -p 9000:9000 -p 9092:9092 \
+    -e sonar.jdbc.username=sonar \
+    -e sonar.jdbc.password=sonar \
+    -e sonar.jdbc.url=jdbc:postgresql://localhost/sonar \
+    sonarqube
+    默认账户admin/admin
+
+分析maven项目：
+	参考地址：https://docs.sonarqube.org/display/SCAN/Analyzing+with+SonarQube+Scanner+for+Maven
+	练习项目：https://github.com/rest-assured/rest-assured
+
+	在maven配置文件中配置maven加速镜像，此处使用华为的
+	<mirror>
+	    <id>huaweicloud</id>
+	    <mirrorOf>*</mirrorOf>
+	    <url>https://mirrors.huaweicloud.com/repository/maven/</url>
+	</mirror>
+
+	再配置sonar相关内容
+	<settings>
+    <pluginGroups>
+        <pluginGroup>org.sonarsource.scanner.maven</pluginGroup>
+    </pluginGroups>
+    <profiles>
+        <profile>
+            <id>sonar</id>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
+            <properties>
+                <!-- Optional URL to server. Default value is http://localhost:9000 -->
+                <sonar.host.url>
+                  http://myserver:9000
+                </sonar.host.url>
+            </properties>
+        </profile>
+     </profiles>
+	</settings>
+
+	然后将练习项目克隆到本地执行命令
+	git clone https://github.com/rest-assured/rest-assured.git
+	cd rest-assured
+	mvn clean test package sonar:sonar
+	或者
+	mvn clean verify sonar:sonar
+	或者想单独执行sonar为一个步骤
+	# In some situation you may want to run sonar:sonar goal as a dedicated step. 
+	# Be sure to use install as first step for multi-module projects
+	mvn clean install
+	mvn sonar:sonar
+
+分析gradle项目：
+	参考地址：https://docs.sonarqube.org/display/SCAN/Analyzing+with+SonarQube+Scanner+for+Gradle
+	练习项目：https://github.com/TeamNB/FakeBiliBili
+
+	配置gradle加速镜像，此处使用华为的
+	Gradle的配置文件为用户根目录下的：~/.gradle/init.gradle
+	Windows路径为：C:\Users\<UserName>\.gradle\ init.gradle
+	加入以下内容
+	allprojects{
+		repositories {
+			maven {
+				url 'https://mirrors.huaweicloud.com/repository/maven/'
+			}
+		}
+		buildscript {
+			repositories {
+				maven {
+					url 'https://mirrors.huaweicloud.com/repository/maven/'
+				}
+			}
+		}
+	}
+
+	然后将练习项目克隆到本地执行命令
+	git clone https://github.com/TeamNB/FakeBiliBili.git
+	cd FakeBiliBili
+	
+	在gradle.properties中添加如下配置
+	systemProp.sonar.host.url=http://localhost:9000
+	#----- Token generated from an account with 'publish analysis' permission
+	systemProp.sonar.login=<token>
+	具体url和token需要根据自身情况填写，登录以后在My Account->Security中生成一个token即可
+
+	在build.gradle中添加插件配置
+	plugins {
+  		id "org.sonarqube" version "2.7"
+	}
+	需要放在buildscript{}后面
+
+	然后执行编译命令打debug包
+	./gradlew clean assembleDebug
+	再执行sonar分析源代码
+	./gradlew sonarqube -Dsonar.projectKey=yourkey -Dsonar.projectName=yourname
