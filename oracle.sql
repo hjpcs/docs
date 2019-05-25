@@ -32,3 +32,33 @@ drop table temp;
 --删除表
 select dbms_metadata.get_ddl('TABLE','table_name') from dual;
 --查看建表语句
+
+闪回flashback操作
+--查看回收站
+SELECT * FROM DBA_RECYCLEBIN ORDER BY droptime DESC;
+--当前用户的回收站
+SELECT * FROM RECYCLEBIN ORDER BY droptime DESC;
+--查询SCN与时间的对应关系
+select scn,to_char(time_dp,'yyyy-mm-dd hh24:mi:ss') from sys.smon_scn_time ORDER BY time_dp DESC;
+--最大/最新的SCN号
+SELECT MAX(SCN) FROM sys.smon_scn_time;
+--查询当前的SCN
+select current_scn from v$database;
+
+--将表的行移动权限打开
+alter table test enable row movement;
+alter table testbak enable row movement;
+alter table testbakk enable row movement;
+alter table testbakkk enable row movement;
+--查看当前数据库scn并保存
+select current_scn from v$database;
+--执行sql语句进行修改表数据
+insert into test values(1,2,3,4,5);
+delete from testbak where a=10 or b=21;
+update testbakk set a=100 where c=32 or d=43;
+delete from testbakkk;
+--执行flashback操作还原数据
+flashback table test to scn 5976071331885;
+flashback table testbak to scn 5976071331885;
+flashback table testbakk to scn 5976071331885;
+flashback table testbakkk to scn 5976071331885;
